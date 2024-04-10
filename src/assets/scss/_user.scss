@@ -1,0 +1,98 @@
+//
+// user.scss
+// Use this to write your custom SCSS
+//
+
+.colcentered {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.rowcentered {
+  display: flex;
+  justify-content: center;
+}
+
+.spaced-colcentered {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.spaced-rowcentered {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  text-align: center;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.filter-modal {
+  width: 456px;
+  height: calc(100vh - 20px);
+  border-radius: 20px;
+  padding: 20px 22px;
+}
+.calendar-modal {
+  width: 456px;
+  height: calc(100vh - 20px);
+  border-radius: 20px;
+  padding: 20px 22px;
+}
+
+.calendar-container {
+  position: absolute;
+  z-index: 1200;
+  background-color: white;
+  width: 420px;
+  padding: 33.7px;
+  border-radius: 16.85px;
+  margin-top: 4px;
+}
+
+.calendar-container.left {
+  left: 0;
+}
+
+.calendar-container.right {
+  right: 0;
+}
+
+/* Adjust width for screens narrower than 500px */
+@media (max-width: 500px) {
+  .filter-modal {
+    width: calc(100vw - 40px);
+    height: calc(100vh - 20px);
+    border-radius: 20px;
+    padding: 20px 22px;
+  }
+
+  .calendar-container {
+    position: absolute;
+    z-index: 1200;
+    background-color: white;
+    width: calc(100vw - 80px);
+    padding: 12.7px;
+    border-radius: 16.85px;
+    margin-top: 4px;
+  }
+}

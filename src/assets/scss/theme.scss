@@ -1,0 +1,24 @@
+/* Theme: MainStack */
+
+@import url('../fonts/degular/degular.css');
+
+// Bootstrap functions
+@import '~bootstrap/scss/functions';
+
+// User Variables
+@import 'user-variables';
+
+// theme variables
+@import 'theme/variables';
+
+//utilities
+@import 'theme/utilities';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// Theme
+@import 'theme/theme';
+
+// User
+@import 'user';
