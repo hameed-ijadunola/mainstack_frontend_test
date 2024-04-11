@@ -3,13 +3,14 @@ import { CustomText } from 'components/CustomText';
 import { capitalize, formatCurrency } from 'helpers/formatText';
 import { useScreenSize } from 'hooks/useScreenSize';
 import LeftMenuBar from 'layouts/dashboard/navbars/LeftMenuBar';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Col, Container, ListGroup, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as InfoSvg } from 'assets/svg/info.svg';
 import { ReactComponent as FilterSvg } from 'assets/svg/expand_more.svg';
 import { ReactComponent as ExportSvg } from 'assets/svg/download.svg';
+import { ReactComponent as ExportSvg1 } from 'assets/svg/download1.svg';
 import { ReactComponent as IncomingSvg } from 'assets/svg/Group 6782.svg';
 import { ReactComponent as OutgoingSvg } from 'assets/svg/Group 67821.svg';
 import { v4 as uuid } from 'uuid';
@@ -33,6 +34,7 @@ import {
   removeDuplicates,
   sortByDate,
 } from 'helpers/functions';
+import { useReactToPrint } from 'react-to-print';
 
 const Dashboard = () => {
   const { isLaptop, isMobile, isMobileS, isTablet } = useScreenSize();
@@ -164,6 +166,12 @@ const Dashboard = () => {
     return { labels: chartLabels, data: chartData };
   }, [filteredTransactions]);
 
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    pageStyle: `@page { margin: 1in; }`,
+  });
+
   return (
     <Fragment>
       <Container
@@ -288,76 +296,89 @@ const Dashboard = () => {
                   text={
                     <span>
                       Export list&nbsp;
-                      <ExportSvg />
+                      {isArrayNonEmpty(filteredTransactions) ? (
+                        <ExportSvg />
+                      ) : (
+                        <ExportSvg1 />
+                      )}
                     </span>
                   }
                   variant="secondary"
                   width={139}
                   className={isMobile ? 'ms-auto' : ''}
+                  onClick={handlePrint}
+                  disabled={!isArrayNonEmpty(filteredTransactions)}
                 />
               </Col>
             </Row>
-            {/* Transaction list items */}
-            {filteredTransactions?.map((trxn) => (
-              <Row
-                key={JSON.stringify(trxn)}
-                sm={12}
-                className={`m-0 p-0 px-2 g-0 mb-3`}
-              >
-                <Col xs="auto" className={'text-wrap d-flex'}>
-                  {trxn?.type === 'deposit' ? <IncomingSvg /> : <OutgoingSvg />}
-                  <div style={{ paddingLeft: 14.5 }}>
+            <Col sm={12} className="m-0 p-0" ref={componentRef}>
+              {/* Transaction list items */}
+              {filteredTransactions?.map((trxn) => (
+                <Row
+                  key={JSON.stringify(trxn)}
+                  sm={12}
+                  className={`m-0 p-0 px-2 g-0 mb-3`}
+                >
+                  <Col xs="auto" className={'text-wrap d-flex'}>
+                    {trxn?.type === 'deposit' ? (
+                      <IncomingSvg />
+                    ) : (
+                      <OutgoingSvg />
+                    )}
+                    <div style={{ paddingLeft: 14.5 }}>
+                      <CustomText
+                        fontSize={16}
+                        fontWeight={500}
+                        text={
+                          trxn?.type === 'deposit'
+                            ? trxn?.metadata?.product_name ||
+                              trxn?.metadata?.name
+                            : 'Cash withdrawal'
+                        }
+                      />
+                      <CustomText
+                        fontSize={14}
+                        fontWeight={500}
+                        text={
+                          trxn?.type === 'deposit'
+                            ? trxn?.metadata?.name
+                            : capitalize(trxn?.status)
+                        }
+                        variant="light"
+                        styleColor={
+                          trxn?.type == 'deposit'
+                            ? ''
+                            : isSubstringInArray(trxn?.status, ['successful'])
+                            ? '#0EA163'
+                            : '#A77A07'
+                        }
+                      />
+                    </div>
+                  </Col>
+                  <Col
+                    md="auto"
+                    xs={'auto'}
+                    className={`d-flex ${
+                      isMobileS
+                        ? 'spaced-rowcentered w-100'
+                        : 'flex-column align-items-end ms-auto'
+                    }`}
+                  >
                     <CustomText
                       fontSize={16}
-                      fontWeight={500}
-                      text={
-                        trxn?.type === 'deposit'
-                          ? trxn?.metadata?.product_name || trxn?.metadata?.name
-                          : 'Cash withdrawal'
-                      }
+                      fontWeight={700}
+                      text={formatCurrency(trxn?.amount)}
                     />
                     <CustomText
                       fontSize={14}
                       fontWeight={500}
-                      text={
-                        trxn?.type === 'deposit'
-                          ? trxn?.metadata?.name
-                          : capitalize(trxn?.status)
-                      }
+                      text={moment(trxn?.date).format('MMM DD, YYYY')}
                       variant="light"
-                      styleColor={
-                        trxn?.type == 'deposit'
-                          ? ''
-                          : isSubstringInArray(trxn?.status, ['successful'])
-                          ? '#0EA163'
-                          : '#A77A07'
-                      }
                     />
-                  </div>
-                </Col>
-                <Col
-                  md="auto"
-                  xs={'auto'}
-                  className={`d-flex ${
-                    isMobileS
-                      ? 'spaced-rowcentered w-100'
-                      : 'flex-column align-items-end ms-auto'
-                  }`}
-                >
-                  <CustomText
-                    fontSize={16}
-                    fontWeight={700}
-                    text={formatCurrency(trxn?.amount)}
-                  />
-                  <CustomText
-                    fontSize={14}
-                    fontWeight={500}
-                    text={moment(trxn?.date).format('MMM DD, YYYY')}
-                    variant="light"
-                  />
-                </Col>
-              </Row>
-            ))}
+                  </Col>
+                </Row>
+              ))}
+            </Col>
           </Row>
         </div>
       </Container>
