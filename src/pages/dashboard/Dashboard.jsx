@@ -1,6 +1,6 @@
 import CustomButton from 'components/CustomButton';
 import { CustomText } from 'components/CustomText';
-import { formatCurrency } from 'helper/formatText';
+import { capitalize, formatCurrency } from 'helpers/formatText';
 import { useScreenSize } from 'hooks/useScreenSize';
 import LeftMenuBar from 'layouts/dashboard/navbars/LeftMenuBar';
 import { Fragment, useEffect, useMemo, useState } from 'react';
@@ -16,23 +16,42 @@ import { v4 as uuid } from 'uuid';
 import moment from 'moment';
 import { FilterModal } from './FilterModal';
 import CustomChart from 'components/CustomChart';
+import { customFetchQuery } from 'redux/features/customFetchQuery';
+import {
+  useGetTransactionsMutation,
+  useGetUserMutation,
+  useGetWalletMutation,
+} from 'redux/features/user/userApi';
+import { saveToStore } from 'redux/features/user/userSlice';
+import { useCustomSelector } from 'redux/features/customSelector';
+import {
+  findOldestAndNewestDates,
+  getIntervalTranslation,
+  isArrayNonEmpty,
+  isDateWithinRange,
+  isSubstringInArray,
+  removeDuplicates,
+  sortByDate,
+} from 'helpers/functions';
 
 const Dashboard = () => {
   const { isLaptop, isMobile, isMobileS, isTablet } = useScreenSize();
   const history = useHistory();
   const dispatch = useDispatch();
+  const { wallet, filters, transactions } = useCustomSelector();
+
   useEffect(() => {
     document.body.className = 'bg-white';
   });
 
   const stats = useMemo(() => {
     return [
-      { id: uuid(), title: 'Ledger balance', amount: 0 },
-      { id: uuid(), title: 'total payout', amount: 55080 },
-      { id: uuid(), title: 'total revenue', amount: 175580 },
-      { id: uuid(), title: 'pending payout', amount: 0 },
+      { id: uuid(), title: 'Ledger balance', amount: wallet?.ledger_balance },
+      { id: uuid(), title: 'total payout', amount: wallet?.total_payout },
+      { id: uuid(), title: 'total revenue', amount: wallet?.total_revenue },
+      { id: uuid(), title: 'pending payout', amount: wallet?.pending_payout },
     ];
-  }, []);
+  }, [wallet]);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -43,6 +62,107 @@ const Dashboard = () => {
   const closeModal = () => {
     setModalIsOpen(false);
   };
+
+  const [getWallet, { isLoading: loadingWallet }] = useGetWalletMutation();
+  const [getTransactions, { isLoading: loadingTransactions }] =
+    useGetTransactionsMutation();
+
+  const fetchTransactions = async () => {
+    await customFetchQuery({
+      api: getTransactions,
+      dispatch,
+      handleSuccess: (data) => {
+        dispatch(saveToStore(['transactions', data]));
+        const defaultStartAndEndDates = findOldestAndNewestDates(
+          data?.map((x) => x?.date)
+        );
+        dispatch(
+          saveToStore(['defaultStartAndEndDates', defaultStartAndEndDates])
+        );
+        dispatch(
+          saveToStore([
+            'defaultTypes',
+            removeDuplicates(
+              data
+                ?.map((x) => x?.type?.replace(/_/g, ' '))
+                ?.filter(
+                  (item) => item !== undefined && item !== null && item !== ''
+                )
+            ),
+          ])
+        );
+        dispatch(
+          saveToStore([
+            'filters',
+            { ...filters, ...defaultStartAndEndDates, selectedInterval: '' },
+          ])
+        );
+      },
+    });
+  };
+  const fetchWallet = async () => {
+    await customFetchQuery({
+      api: getWallet,
+      dispatch,
+      handleSuccess: (data) => {
+        dispatch(saveToStore(['wallet', data]));
+      },
+    });
+  };
+
+  useEffect(() => {
+    fetchWallet();
+    fetchTransactions();
+  }, []);
+
+  const filteredTransactions = useMemo(() => {
+    let filtered = transactions || [];
+    filtered = sortByDate(filtered);
+    if (filters?.startDate && filters?.endDate) {
+      filtered = filtered?.filter((x) =>
+        isDateWithinRange(x?.date, filters?.startDate, filters?.endDate)
+      );
+    }
+    if (isArrayNonEmpty(filters?.selectedType)) {
+      filtered = filtered?.filter((x) =>
+        isSubstringInArray(
+          x?.type?.replace(/_/g, ' '),
+          filters?.selectedType?.map((x) => x?.value)
+        )
+      );
+    }
+    if (isArrayNonEmpty(filters?.selectedStatus)) {
+      filtered = filtered?.filter((x) =>
+        isSubstringInArray(
+          x?.status,
+          filters?.selectedStatus?.map((x) => x?.value)
+        )
+      );
+    }
+    return filtered;
+  }, [transactions, filters]);
+
+  const chartProps = useMemo(() => {
+    const chartLabels = sortByDate(filteredTransactions, true)?.map((x) =>
+      moment(x?.date).format('MMM DD, YYYY')
+    );
+
+    const chartData = {
+      labels: chartLabels,
+      datasets: [
+        {
+          data: filteredTransactions?.map((x) =>
+            isNaN(parseFloat(x?.amount)) ? null : parseFloat(x?.amount)
+          ),
+          borderColor: '#FF5403',
+          backgroundColor: '#FF5403',
+          borderWidth: 1,
+          tension: 0.3,
+        },
+      ],
+    };
+    return { labels: chartLabels, data: chartData };
+  }, [filteredTransactions]);
 
   return (
     <Fragment>
@@ -64,7 +184,11 @@ const Dashboard = () => {
                     <CustomText
                       fontSize={36}
                       fontWeight={700}
-                      text={formatCurrency(120500)}
+                      text={
+                        typeof wallet?.balance === 'undefined'
+                          ? '...'
+                          : formatCurrency(wallet?.balance)
+                      }
                     />
                   </Col>
                   <Col md={'auto'} sm={12} className={'ms-lg-8 ms-auto'}>
@@ -76,7 +200,7 @@ const Dashboard = () => {
                 className="w-100 centered pb-lg-0 pb-10"
                 style={{ height: 300 }}
               >
-                <CustomChart />
+                <CustomChart {...chartProps} />
               </Col>
             </Col>
             <Col
@@ -100,7 +224,11 @@ const Dashboard = () => {
                   <CustomText
                     fontSize={28}
                     fontWeight={700}
-                    text={formatCurrency(stat?.amount)}
+                    text={
+                      typeof stat?.amount === 'undefined'
+                        ? '...'
+                        : formatCurrency(stat?.amount)
+                    }
                   />
                 </Col>
               ))}
@@ -112,14 +240,25 @@ const Dashboard = () => {
                 <CustomText
                   fontSize={24}
                   fontWeight={700}
-                  text={'24 Transactions'}
+                  text={`${filteredTransactions?.length || '0'} Transaction${
+                    filteredTransactions?.length > 1 ? 's' : ''
+                  }`}
                   textStyle={{ lineHeight: 1 }}
                   // removeView={true}
                 />
                 <CustomText
                   fontSize={14}
                   fontWeight={500}
-                  text={'Your transactions for the last 7 days'}
+                  text={`Your transactions ${
+                    filters?.selectedInterval
+                      ? filters?.selectedInterval === 'Custom'
+                        ? moment(filters?.startDate)?.format('MMM DD, YYYY') +
+                          ' to ' +
+                          moment(filters?.endDate)?.format('MMM DD, YYYY')
+                        : 'for ' +
+                          getIntervalTranslation(filters?.selectedInterval)
+                      : 'for all time'
+                  }`}
                   variant="light"
                 />
               </Col>
@@ -156,45 +295,62 @@ const Dashboard = () => {
               </Col>
             </Row>
             {/* Transaction list items */}
-            <Row sm={12} className={`m-0 p-0 px-2 g-0 mb-3`}>
-              <Col xs="auto" className={'text-wrap d-flex'}>
-                <IncomingSvg />
-                <div style={{ paddingLeft: 14.5 }}>
+            {filteredTransactions?.map((trxn) => (
+              <Row sm={12} className={`m-0 p-0 px-2 g-0 mb-3`}>
+                <Col xs="auto" className={'text-wrap d-flex'}>
+                  {trxn?.type === 'deposit' ? <IncomingSvg /> : <OutgoingSvg />}
+                  <div style={{ paddingLeft: 14.5 }}>
+                    <CustomText
+                      fontSize={16}
+                      fontWeight={500}
+                      text={
+                        trxn?.type === 'deposit'
+                          ? trxn?.metadata?.product_name || trxn?.metadata?.name
+                          : 'Cash withdrawal'
+                      }
+                    />
+                    <CustomText
+                      fontSize={14}
+                      fontWeight={500}
+                      text={
+                        trxn?.type === 'deposit'
+                          ? trxn?.metadata?.name
+                          : capitalize(trxn?.status)
+                      }
+                      variant="light"
+                      styleColor={
+                        trxn?.type == 'deposit'
+                          ? ''
+                          : isSubstringInArray(trxn?.status, ['successful'])
+                          ? '#0EA163'
+                          : '#A77A07'
+                      }
+                    />
+                  </div>
+                </Col>
+                <Col
+                  md="auto"
+                  xs={'auto'}
+                  className={`d-flex ${
+                    isMobileS
+                      ? 'spaced-rowcentered w-100'
+                      : 'flex-column align-items-end ms-auto'
+                  }`}
+                >
                   <CustomText
                     fontSize={16}
-                    fontWeight={500}
-                    text={'24 Transactions'}
+                    fontWeight={700}
+                    text={formatCurrency(trxn?.amount)}
                   />
                   <CustomText
                     fontSize={14}
                     fontWeight={500}
-                    text={'Your transactions for the'}
+                    text={moment(trxn?.date).format('MMM DD, YYYY')}
                     variant="light"
                   />
-                </div>
-              </Col>
-              <Col
-                md="auto"
-                xs={'auto'}
-                className={`d-flex ${
-                  isMobileS
-                    ? 'spaced-rowcentered w-100'
-                    : 'flex-column align-items-end ms-auto'
-                }`}
-              >
-                <CustomText
-                  fontSize={16}
-                  fontWeight={700}
-                  text={formatCurrency(24)}
-                />
-                <CustomText
-                  fontSize={14}
-                  fontWeight={500}
-                  text={moment().format('MMM DD, YYYY')}
-                  variant="light"
-                />
-              </Col>
-            </Row>
+                </Col>
+              </Row>
+            ))}
           </Row>
         </div>
       </Container>

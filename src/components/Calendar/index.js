@@ -10,7 +10,7 @@ import calendar, {
   getPreviousMonth,
   WEEK_DAYS,
   CALENDAR_MONTHS,
-} from '../../helper/calendar';
+} from '../../helpers/calendar';
 import { ReactComponent as ArrowLeft } from '../../assets/svg/icon button1.svg';
 import { ReactComponent as ArrowRight } from '../../assets/svg/icon button.svg';
 import moment from 'moment';

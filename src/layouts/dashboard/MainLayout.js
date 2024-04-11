@@ -1,4 +1,4 @@
-import { hide } from 'helper/toast';
+import { hide } from 'helpers/toast';
 import { Fragment, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';

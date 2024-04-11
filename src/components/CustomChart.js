@@ -33,7 +33,7 @@ export const options = {
   elements: { point: { pointStyle: false } },
   scales: {
     x: {
-      display: false, // Hides the grid lines
+      display: false,
     },
     y: {
       display: false,
@@ -41,24 +41,7 @@ export const options = {
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-export const data = {
-  labels,
-
-  datasets: [
-    {
-      data: [32, -400, 200, 600, 900, 60, -800],
-      borderColor: '#FF5403',
-      backgroundColor: '#FF5403',
-      borderWidth: 1,
-      tension: 0.3,
-    },
-  ],
-};
-
-const CustomChart = () => {
-  console.log('data', data?.datasets[0]?.data);
+const CustomChart = ({ data, labels }) => {
   return (
     <div className="w-100" style={{ height: 240 }}>
       <Line options={options} data={data} />

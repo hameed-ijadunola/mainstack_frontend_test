@@ -17,10 +17,10 @@ import { PersistGate } from 'redux-persist/integration/react';
 import WebFont from 'webfontloader';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-bootstrap';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   let persistor = persistStore(store);
-
 
   return (
     <Provider store={store}>
@@ -43,7 +43,6 @@ function App() {
             <AllRoutes />
           </div>
         </Router>
-        <ToastContainer />
       </PersistGate>
     </Provider>
   );

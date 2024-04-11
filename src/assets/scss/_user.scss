@@ -96,3 +96,16 @@
     margin-top: 4px;
   }
 }
+
+.disable-selection {
+  -webkit-touch-callout: none; /* Disable touch callout on iOS Safari */
+  -webkit-user-select: none; /* Disable text selection on Safari */
+  -khtml-user-select: none; /* Disable text selection on Konqueror HTML */
+  -moz-user-select: none; /* Disable text selection on older versions of Firefox */
+  -ms-user-select: none; /* Disable text selection on Internet Explorer/Edge */
+  user-select: none; /* Disable text selection on modern browsers (Chrome, Edge, Opera, Firefox) */
+}
+
+.reset-all {
+  all: unset;
+}

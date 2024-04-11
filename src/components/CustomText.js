@@ -26,7 +26,11 @@ export const CustomText = ({
   return removeView ? (
     <p
       className={`${cNColor || ''} ${
-        variant === 'dark' ? 'text-primary' : 'text-primary-400'
+        styleColor
+          ? ''
+          : variant === 'dark'
+          ? 'text-primary'
+          : 'text-primary-400'
       } ${textClassName}`}
       style={{
         fontFamily: fontFamily,
@@ -51,7 +55,11 @@ export const CustomText = ({
     >
       <p
         className={`${cNColor || ''} ${
-          variant === 'dark' ? 'text-primary' : 'text-primary-400'
+          styleColor
+            ? ''
+            : variant === 'dark'
+            ? 'text-primary'
+            : 'text-primary-400'
         } ${textClassName}`}
         style={{
           fontFamily: fontFamily,

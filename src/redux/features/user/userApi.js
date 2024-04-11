@@ -6,14 +6,14 @@ export const userApi = createApi({
   baseQuery: customFetchBase,
   endpoints: (builder) => ({
     getUser: builder.mutation({
-      query: (id) => ({
-        url: `user/${id}`,
+      query: () => ({
+        url: `user`,
         method: 'GET',
       }),
     }),
     getWallet: builder.mutation({
-      query: (id) => ({
-        url: `wallet/${id}`,
+      query: () => ({
+        url: `wallet`,
         method: 'GET',
       }),
     }),

@@ -18,14 +18,33 @@ import { ReactComponent as MessageSvg } from 'assets/svg/Frame 6853.svg';
 import { ReactComponent as BellSvg } from 'assets/svg/small tertiary button.svg';
 import { ReactComponent as MenuSvg } from 'assets/svg/menu.svg';
 import { CustomText } from 'components/CustomText';
-import { highlightWords } from 'helper/formatText';
+import { getInitials, highlightWords } from 'helpers/formatText';
 import { useDispatch } from 'react-redux';
+import { useCustomSelector } from 'redux/features/customSelector';
+import { useGetUserMutation } from 'redux/features/user/userApi';
+import { customFetchQuery } from 'redux/features/customFetchQuery';
+import { saveToStore } from 'redux/features/user/userSlice';
 
 const MainNavbar = ({ transparent }) => {
   const history = useHistory();
   const route = useRouteMatch();
   const dispatch = useDispatch();
-  const user = { firstName: 'Olamide', lastName: 'Jamal' };
+  const { user } = useCustomSelector();
+  const [getUser, { isLoading }] = useGetUserMutation();
+
+  const handleProfileFetch = async () => {
+    await customFetchQuery({
+      api: getUser,
+      dispatch,
+      handleSuccess: (data) => {
+        dispatch(saveToStore(['user', data]));
+      },
+    });
+  };
+
+  useEffect(() => {
+    handleProfileFetch();
+  }, []);
   const { isLaptop, isTablet, isMobile } = useScreenSize();
   const [expandedMenu, setExpandedMenu] = useState(false);
 
@@ -43,7 +62,6 @@ const MainNavbar = ({ transparent }) => {
       <Navbar
         onToggle={(collapsed) => {
           setExpandedMenu(collapsed);
-          console.log(collapsed);
         }}
         expanded={expandedMenu}
         expand="lg"
@@ -130,38 +148,10 @@ const MainNavbar = ({ transparent }) => {
             </Nav>
             <Nav className="navbar-nav navbar-right-wrap ms-auto d-flex nav-top-wrap">
               <div className={`mt-2 mt-lg-0 ms-auto d-flex align-items-center`}>
-                <Dropdown as={Nav.Item}>
-                  <Dropdown.Toggle
-                    as={Nav.Link}
-                    bsPrefix="dt"
-                    className="border-bottom-0"
-                    id="dropdownNotification"
-                  >
-                    <BellSvg />
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu
-                    className="dashboard-dropdown dropdown-menu-end mt-4 py-3 px-2"
-                    aria-labelledby="dropdownUser"
-                    align="end"
-                    style={{ width: '100px' }}
-                  ></Dropdown.Menu>
-                </Dropdown>
-                <Dropdown as={Nav.Item}>
-                  <Dropdown.Toggle
-                    as={Nav.Link}
-                    bsPrefix="dt"
-                    className="border-bottom-0"
-                    id="dropdownNotification"
-                  >
-                    <MessageSvg />
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu
-                    className="dashboard-dropdown dropdown-menu-end mt-4 py-3 px-2"
-                    aria-labelledby="dropdownUser"
-                    align="end"
-                    style={{ width: '100px' }}
-                  ></Dropdown.Menu>
-                </Dropdown>
+                <BellSvg className="me-1" />
+
+                <MessageSvg className="me-1" />
+
                 <Dropdown as={Nav.Item}>
                   <Dropdown.Toggle
                     as={Nav.Link}
@@ -175,41 +165,23 @@ const MainNavbar = ({ transparent }) => {
                       height: '40px',
                     }}
                   >
-                    <Image
-                      alt="avatar"
-                      src={OJ}
-                      className="rounded-circle px-2 ps-lg-0"
+                    <CustomText
+                      text={getInitials(user)}
+                      cNColor={'text-white'}
+                      divClassName="bg-dark bg-gradient rounded-circle centered ms-1"
+                      divStyle={{ width: 32, height: 32 }}
+                      fontWeight={600}
+                      fontSize={14}
                     />
-                    <MenuSvg />
+                    <MenuSvg
+                      className="ms-1"
+                      onClick={() =>
+                        isMobile || isTablet
+                          ? setExpandedMenu((prev) => !prev)
+                          : null
+                      }
+                    />
                   </Dropdown.Toggle>
-                  <Dropdown.Menu
-                    className="dashboard-dropdown dropdown-menu-end mt-4 py-0"
-                    aria-labelledby="dropdownUser"
-                    align="end"
-                  >
-                    <Dropdown.Item className="mt-3">
-                      <div className="d-flex align-items-center">
-                        <div className="avatar avatar-md avatar-indicators avatar-online">
-                          <Image
-                            alt="avatar"
-                            src={OJ}
-                            className="rounded-circle"
-                          />
-                        </div>
-
-                        <div className="ms-3 lh-1">
-                          <h5 className="mb-1">
-                            {user?.firstName + ' ' + user?.lastName}
-                          </h5>
-                          <p className="mb-0 text-muted">{user?.email}</p>
-                        </div>
-                      </div>
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item className="mb-3" onClick={() => {}}>
-                      <i className="fe fe-power me-2"></i> Log out
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
                 </Dropdown>
               </div>
             </Nav>
