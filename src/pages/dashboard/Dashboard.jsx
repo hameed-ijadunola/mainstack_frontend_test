@@ -153,7 +153,7 @@ const Dashboard = () => {
       labels: chartLabels,
       datasets: [
         {
-          data: filteredTransactions?.map((x) =>
+          data: sortByDate(filteredTransactions, true)?.map((x) =>
             isNaN(parseFloat(x?.amount)) ? null : parseFloat(x?.amount)
           ),
           borderColor: '#FF5403',

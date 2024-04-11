@@ -184,7 +184,6 @@ const MainNavbar = ({ transparent }) => {
                       }
                     />
                   </Dropdown.Toggle>
-                  <Dropdown.Menu data-testId="dropdownMenu"></Dropdown.Menu>
                 </Dropdown>
               </div>
             </Nav>
