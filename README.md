@@ -1,10 +1,10 @@
-# Mainstack Frontend Test Project[1]
+# Mainstack Frontend Test Project
 
 This project is a React.js application bootstrapped with Create React App, utilizing various libraries and tools for a comprehensive development experience. It includes React Bootstrap for UI components, Redux and Redux Toolkit Query for state management, Sass for styling, Chart.js for data visualization, Styled Components for CSS-in-JS styling, and React-to-Print for printing components. Additionally, it employs unit testing with @testing-library/react, @testing-library/jest-dom, and @testing-library/user-event.
 
 ## Requirements Met
 
-- **Mobile Responsive**: The application is designed to be mobile responsive, ensuring a seamless user experience across devices [1].
+- **Mobile Responsive**: The application is designed to be mobile responsive, ensuring a seamless user experience across devices.
 - **UI Pixel Perfection and Attention to Details**: The UI is crafted with pixel perfection and attention to details, ensuring a visually appealing and user-friendly interface.
 - **Line Chart (Responsive)**: The application includes a responsive line chart, leveraging Chart.js for data visualization.
 - **API Integration**: The project integrates with the provided external APIs to fetch and display data dynamically.
@@ -16,7 +16,7 @@ This project is a React.js application bootstrapped with Create React App, utili
 
 The application has been deployed to Vercel, a cloud platform for static sites and Serverless Functions that fits perfectly with React.js projects. Vercel is known for its ease of use, performance, and scalability, making it an excellent choice for deploying modern web applications.
 
-You can access the deployed application at [https://mainstack-frontend-test.vercel.app/](Mainstack Frontend Test).[1]
+You can access the deployed application at [https://mainstack-frontend-test.vercel.app/] (Mainstack Frontend Test).
 
 ## Setup and Running the App
 
@@ -49,5 +49,4 @@ Contributions are welcome! Please read the contributing guidelines before submit
 
 This project is licensed under the MIT License.
 
-Citations:
-[1] https://mainstack-frontend-test.vercel.app/
+https://mainstack-frontend-test.vercel.app/
