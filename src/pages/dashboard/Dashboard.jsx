@@ -210,7 +210,7 @@ const Dashboard = () => {
             >
               {/* Transaction details cards */}
               {stats?.map((stat) => (
-                <Col md={'auto'} sm={12} className="mb-4">
+                <Col key={stat?.id} md={'auto'} sm={12} className="mb-4">
                   <div className="spaced-rowcentered pb-2">
                     <CustomText
                       fontSize={14}
@@ -296,7 +296,11 @@ const Dashboard = () => {
             </Row>
             {/* Transaction list items */}
             {filteredTransactions?.map((trxn) => (
-              <Row sm={12} className={`m-0 p-0 px-2 g-0 mb-3`}>
+              <Row
+                key={JSON.stringify(trxn)}
+                sm={12}
+                className={`m-0 p-0 px-2 g-0 mb-3`}
+              >
                 <Col xs="auto" className={'text-wrap d-flex'}>
                   {trxn?.type === 'deposit' ? <IncomingSvg /> : <OutgoingSvg />}
                   <div style={{ paddingLeft: 14.5 }}>

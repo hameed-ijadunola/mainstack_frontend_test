@@ -10,12 +10,11 @@ import 'simplebar/dist/simplebar.min.css';
 import 'tippy.js/animations/scale.css';
 
 import { Provider } from 'react-redux';
-import { store } from 'redux/store';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
+import { store } from 'redux/store';
 
-import { useEffect } from 'react';
-import { ToastContainer } from 'react-bootstrap';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
