@@ -1,11 +1,6 @@
 //
 // user-variables.scss
-// Use this to overwrite Bootstrap and Geeks variables
-//
-// Example of a variable override to change Geeks primary color
-// Remove the "//" to comment it in and see it in action!
-// $primary: #000;
-@import '~react-image-gallery/styles/scss/image-gallery.scss';
+// Use this to overwrite Bootstrap variables
 a {
   color: inherit !important;
 }

@@ -1,25 +1,22 @@
 import CustomButton from 'components/CustomButton';
-import { Col } from 'react-bootstrap';
 
+import { ReactComponent as CloseSvg } from 'assets/svg/32px icon button.svg';
+import Calendar from 'components/Calendar';
+import CustomSelectInput from 'components/CustomSelectInput';
+import { CustomText } from 'components/CustomText';
 import { useScreenSize } from 'hooks/useScreenSize';
+import moment from 'moment';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useCustomSelector } from 'redux/features/customSelector';
-import Modal from 'react-modal';
-import { CustomText } from 'components/CustomText';
-import { ReactComponent as CloseSvg } from 'assets/svg/32px icon button.svg';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import CustomSelectInput from 'components/CustomSelectInput';
 import { v4 as uuid } from 'uuid';
-import Calendar from 'components/Calendar';
-import moment from 'moment';
 
-import { ReactComponent as DropSvg } from 'assets/svg/expand_more1.svg';
 import { ReactComponent as Drop1Svg } from 'assets/svg/expand_less1.svg';
-import { saveToStore } from 'redux/features/user/userSlice';
+import { ReactComponent as DropSvg } from 'assets/svg/expand_more1.svg';
 import { capitalize } from 'helpers/formatText';
-import CustomTooltip from 'components/CustomTooltip';
-import { getIn } from 'formik';
+import { saveToStore } from 'redux/features/user/userSlice';
 
 export const FilterModal = ({ visible, handleClose, showCloseBtn }) => {
   const { isMobile, isMobileS, isTablet, isLaptop, isDesktop } =
@@ -73,7 +70,6 @@ export const FilterModal = ({ visible, handleClose, showCloseBtn }) => {
 
   const getIntervalDates = useCallback(
     (selectedInterval) => {
-      console.log('first', 'first');
       const currentDate = new Date();
       switch (selectedInterval) {
         case 'Today':
@@ -122,7 +118,6 @@ export const FilterModal = ({ visible, handleClose, showCloseBtn }) => {
   );
 
   const intervals = useMemo(() => {
-    console.log('second', 'second');
     const results = [
       {
         id: uuid(),
@@ -173,7 +168,6 @@ export const FilterModal = ({ visible, handleClose, showCloseBtn }) => {
         ...getIntervalDates('Custom'),
       },
     ];
-    console.log('results', results[3], startDate, endDate);
 
     return results;
   }, [getIntervalDates]);
@@ -217,7 +211,6 @@ export const FilterModal = ({ visible, handleClose, showCloseBtn }) => {
   };
 
   const handleTypeChange = (val) => {
-    console.log('date', val);
     setSelectedType(val);
   };
   const handleStatusChange = (val) => {

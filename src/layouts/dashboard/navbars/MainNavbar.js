@@ -113,6 +113,7 @@ const MainNavbar = ({ transparent }) => {
                             : 'text-gray-500 bg-transparent'
                         }`}
                       style={{
+                        fontFamily: 'Degular',
                         fontWeight: 600,
                         paddingLeft: 14,
                         paddingRight: 18,

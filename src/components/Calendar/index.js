@@ -94,7 +94,6 @@ export default function Calendar({
     const isToday = isSameDay(_date, today);
 
     const isCurrent = current && isSameDay(_date, current);
-    console.log('isCurrent', isCurrent);
 
     const inMonth =
       month && year && isSameMonth(_date, new Date([year, month, 1].join('-')));
