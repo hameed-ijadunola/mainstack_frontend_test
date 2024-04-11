@@ -16,7 +16,7 @@ This project is a React.js application bootstrapped with Create React App, utili
 
 The application has been deployed to Vercel, a cloud platform for static sites and Serverless Functions that fits perfectly with React.js projects. Vercel is known for its ease of use, performance, and scalability, making it an excellent choice for deploying modern web applications.
 
-You can access the deployed application at [https://mainstack-frontend-test.vercel.app/] (Mainstack Frontend Test).
+You can access the deployed application at [Mainstack Frontend Test](https://mainstack-frontend-test.vercel.app/)
 
 ## Setup and Running the App
 
