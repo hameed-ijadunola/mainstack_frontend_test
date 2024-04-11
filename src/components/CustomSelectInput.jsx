@@ -232,6 +232,7 @@ const CustomSelectInput = ({
               marginBottom: inputBottom,
               width: '100%',
               borderStyle: 'none',
+              fontFamily: 'Degular',
             };
           },
         }}
