@@ -166,7 +166,10 @@ const Dashboard = () => {
 
   return (
     <Fragment>
-      <Container className="min-vh-100 mt-13 position-relative">
+      <Container
+        className="min-vh-100 mt-13 position-relative"
+        data-testid="dashboard-container"
+      >
         <LeftMenuBar />
         <div style={{ marginTop: -200 }}>
           <Row className="px-8 py-6">
@@ -358,7 +361,11 @@ const Dashboard = () => {
           </Row>
         </div>
       </Container>
-      <FilterModal handleClose={closeModal} visible={modalIsOpen} />
+      <FilterModal
+        handleClose={closeModal}
+        visible={modalIsOpen}
+        data-testId="filter-modal"
+      />
     </Fragment>
   );
 };

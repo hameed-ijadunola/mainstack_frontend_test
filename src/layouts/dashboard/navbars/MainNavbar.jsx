@@ -5,29 +5,27 @@ import { Container, Dropdown, Image, Nav, Navbar } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 // import media files
-import OJ from 'assets/pngs/avi.png';
 import Logo from 'assets/pngs/logo.png';
 
 // import data files
 import { useScreenSize } from 'hooks/useScreenSize';
 import NavbarDefaultRoutes from 'layouts/dashboard/navbars/MainNavRoutes';
 import NavDropdownMain from 'layouts/dashboard/navbars/NavDropdownMain';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { ReactComponent as MessageSvg } from 'assets/svg/Frame 6853.svg';
-import { ReactComponent as BellSvg } from 'assets/svg/small tertiary button.svg';
 import { ReactComponent as MenuSvg } from 'assets/svg/menu.svg';
+import { ReactComponent as BellSvg } from 'assets/svg/small tertiary button.svg';
 import { CustomText } from 'components/CustomText';
-import { getInitials, highlightWords } from 'helpers/formatText';
+import { getInitials } from 'helpers/formatText';
 import { useDispatch } from 'react-redux';
+import { customFetchQuery } from 'redux/features/customFetchQuery';
 import { useCustomSelector } from 'redux/features/customSelector';
 import { useGetUserMutation } from 'redux/features/user/userApi';
-import { customFetchQuery } from 'redux/features/customFetchQuery';
 import { saveToStore } from 'redux/features/user/userSlice';
 
 const MainNavbar = ({ transparent }) => {
   const history = useHistory();
-  const route = useRouteMatch();
   const dispatch = useDispatch();
   const { user } = useCustomSelector();
   const [getUser, { isLoading }] = useGetUserMutation();
@@ -60,6 +58,7 @@ const MainNavbar = ({ transparent }) => {
   return (
     <Fragment>
       <Navbar
+        data-testId="navbar"
         onToggle={(collapsed) => {
           setExpandedMenu(collapsed);
         }}
@@ -70,6 +69,7 @@ const MainNavbar = ({ transparent }) => {
         }`}
       >
         <Container
+          data-testId={transparent ? 'navbar-transparent' : ''}
           className="rowcentered shadow w-100 bg-white"
           style={{
             paddingLeft: 12,
@@ -108,7 +108,7 @@ const MainNavbar = ({ transparent }) => {
                         isTablet || isMobile ? 'w-100' : ''
                       } 
                         ${
-                          route.path.includes(item.link)
+                          history?.location?.pathname?.includes(item.link)
                             ? 'text-white bg-black'
                             : 'text-gray-500 bg-transparent'
                         }`}
@@ -155,6 +155,7 @@ const MainNavbar = ({ transparent }) => {
 
                 <Dropdown as={Nav.Item}>
                   <Dropdown.Toggle
+                    data-testId="dropdownUser"
                     as={Nav.Link}
                     bsPrefix="dt"
                     className="border-bottom-0 d-flex align-items-center"
@@ -183,6 +184,7 @@ const MainNavbar = ({ transparent }) => {
                       }
                     />
                   </Dropdown.Toggle>
+                  <Dropdown.Menu data-testId="dropdownMenu"></Dropdown.Menu>
                 </Dropdown>
               </div>
             </Nav>

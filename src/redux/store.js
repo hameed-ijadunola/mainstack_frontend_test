@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
-import localStorage from 'redux-persist/es/storage';
+import LocalStorage from 'redux-persist/lib/storage';
 import { userApi } from './features/user/userApi';
 import userReducer from './features/user/userSlice';
 
@@ -14,7 +14,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   version: 1,
-  storage: localStorage,
+  storage: LocalStorage,
   whitelist: ['userStore'],
   blacklist: [[userApi.reducerPath]],
 };

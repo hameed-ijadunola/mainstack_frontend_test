@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { saveToStore } from 'redux/features/user/userSlice';
 import MainNavbar from './navbars/MainNavbar';
-import LeftMenuBar from './navbars/LeftMenuBar';
 
 const MainLayout = (props) => {
   const dispatch = useDispatch();

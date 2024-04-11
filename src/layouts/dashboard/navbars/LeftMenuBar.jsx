@@ -1,9 +1,8 @@
-import React from 'react';
-import { Tooltip, OverlayTrigger, Container } from 'react-bootstrap';
 import { ReactComponent as AppSvg } from 'assets/svg/app-bar-list.svg';
 import { ReactComponent as AppSvg1 } from 'assets/svg/app-bar-list1.svg';
 import { ReactComponent as AppSvg2 } from 'assets/svg/app-bar-list2.svg';
 import { ReactComponent as AppSvg3 } from 'assets/svg/app-bar-list3.svg';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const LeftMenuBar = () => {
   const menuItems = [
@@ -14,7 +13,7 @@ const LeftMenuBar = () => {
   ];
 
   return (
-    <div className="left-menu-bar shadow">
+    <div className="left-menu-bar shadow" data-testid="left-menu-bar">
       {menuItems.map((item, index) => (
         <OverlayTrigger
           key={index}

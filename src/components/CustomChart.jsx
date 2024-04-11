@@ -43,7 +43,7 @@ export const options = {
 
 const CustomChart = ({ data, labels }) => {
   return (
-    <div className="w-100" style={{ height: 240 }}>
+    <div className="w-100" style={{ height: 240 }} data-testid="custom-chart">
       <Line options={options} data={data} />
 
       <div className="w-100 spaced-rowcentered">

@@ -2,14 +2,12 @@
 import { Link } from 'react-router-dom';
 import { Fragment } from 'react';
 import { NavDropdown } from 'react-bootstrap';
-import { useMediaQuery } from 'react-responsive';
+import { useScreenSize } from 'hooks/useScreenSize';
 
 const NavDropdownMain = (props) => {
   const { item, onClick } = props;
 
-  const isDesktop = useMediaQuery({
-    query: '(min-width: 1224px)',
-  });
+  const { isDesktop } = useScreenSize();
 
   const NavbarDesktop = () => {
     return (

@@ -401,6 +401,7 @@ export const FilterModal = ({ visible, handleClose, showCloseBtn }) => {
           padding: '20px 22px',
         }}
         className="bg-white filter-modal"
+        data-testId="filter-modal"
       >
         <div className="d-flex flex-column justify-content-between w-100 h-100">
           <div>
